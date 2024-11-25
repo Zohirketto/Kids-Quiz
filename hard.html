@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Mode</title>
+    <link rel="stylesheet" href="./bootstrap-5.3.2-dist/css/bootstrap.min.css">
+    <script src="./bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background-image:  url(./doodle-elements-children-s-style-repeating-pattern-wallpaper-background-textile-packaging_676179-1017.avif);
+            
+            
+
+         }
+        h1 {
+            text-align: center;
+            color: #6d597a;
+            text-transform: uppercase;
+            text-shadow: 5px 5px 15px;
+            margin: 1%;
+            padding: 1%;
+        }
+        #chrono {
+            text-align: center;
+            font-size: 5em;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        #calc {
+            text-align: center;
+            font-size: 4em;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        #score {
+            font-size: 2em;
+            color: green;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-bottom: 1rem;
+        }
+        .card {
+            padding: 1rem;
+            border: none;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card container w-25 text-center justify-content-center mt-3">
+        <h2>Your Score: <span id="ih"></span></h2>
+        <p id="score">0</p>
+        <p id="previousScore"></p>
+    </div>
+    <div class="container d-flex flex-column gap-3">
+        <h2 id="chrono"></h2>
+        <h2 id="calc" style="color:#c38e70"></h2> 
+        <input id="user" class="form-control w-75 align-self-center" type="number" placeholder="Enter answer" style="padding: 40px;font-size: 2rem; border: none;border-bottom: 3px solid gray; border-radius: 5px;outline: none;">
+        
+        <div class="d-flex justify-content-center" style="margin: 30px;">
+            <button onclick="start()" class="btn btn-info w-10 align-self-center" id="bt" style="margin: 30px; background-color:#fec89a; border: none;">START</button> 
+            <button onclick="restart()" class="btn btn-info w-10 align-self-center" id="rest" style="margin: 30px; background-color:#fec89a; border: none; display: none;">RESTART</button>
+            <button onclick="check()" class="btn btn-success w-10 align-self-center" style="margin: 30px; background-color: #ffb5a7; border: none;">CHECK</button> 
+        </div>
+        <a class="align-self-center" href="./choice.html"><button class="btn" style="background-color: limegreen">Choose another level</button></a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const previousScore = localStorage.getItem('previousScore');
+            const previousScoreElement = document.getElementById('previousScore');
+            if (previousScore !== null) {
+                previousScoreElement.innerText = 'Previous Score: ' + previousScore;
+            } else {
+                previousScoreElement.innerText = 'No previous score available';
+            }
+
+            let chrono = document.querySelector('#chrono');
+            let calc = document.querySelector('#calc');
+            let user = document.querySelector('#user');
+            let userScore = document.querySelector('#score');
+            let score = 0;
+            let questionCount = 0;
+            let timeRemaining = 60;
+            let timer;
+            const username = localStorage.getItem('username') || "Player";
+            document.getElementById("ih").innerText = username + ":";
+            let result;
+
+            function start() {
+                document.getElementById("bt").style.display = "none";
+                timeRemaining = 60;
+                questionCount = 0;
+                score = 0;
+                userScore.innerText = score;
+                generateQuestion();
+                timer = setInterval(updateTimer, 1000);
+            }
+
+            function updateTimer() {
+                timeRemaining--;
+                chrono.innerText = timeRemaining;
+
+                if (timeRemaining === 0) {
+                    finishGame();
+                }
+
+                if (timeRemaining <= 10) {
+                    chrono.style.color = 'red';
+                } else if (timeRemaining <= 30) {
+                    chrono.style.color = 'yellow';
+                } else {
+                    chrono.style.color = 'green';
+                }
+            }
+
+            function generateQuestion() {
+                const num1 = Math.floor(Math.random() * 26);
+                const num2 = Math.floor(Math.random() * 11);
+                const operators = ['+', '-', '*', '/'];
+                const operator = operators[Math.floor(Math.random() * operators.length)];
+
+                switch (operator) {
+                    case '+':
+                        result = num1 + num2;
+                        break;
+                    case '-':
+                        result = num1 - num2;
+                        break;
+                    case '*':
+                        result = num1 * num2;
+                        break;
+                    case '/':
+                        result = Math.round((num1 / num2) * 100) / 100;
+                        break;
+                }
+
+                calc.innerText = `${num1} ${operator} ${num2} = ?`;
+                user.value = '';
+            }
+
+            function check() {
+                user.innerText=""
+                const userAnswer = parseFloat(user.value);
+                if (isNaN(userAnswer)) {
+                    alert("Please enter a number");
+                    return;
+                }
+
+                if (userAnswer === result) {
+                    score++;
+                    userScore.innerText = score;
+                }
+
+                questionCount++;
+                generateQuestion();
+            }
+
+            function finishGame() {
+                clearInterval(timer);
+                chrono.innerText = 'Time\'s up!';
+                chrono.style.color = 'green'; 
+                chrono.style.fontSize = '50px';
+
+                const message = document.createElement('p');
+                message.style.fontSize = '2em';
+                message.id = "message";
+                message.style.textAlign = 'center';
+                message.style.color = 'blue';
+
+                const level = "Easy";
+                localStorage.setItem('previousScore', score);
+                localStorage.setItem('level', level);
+                localStorage.setItem('username', username);
+
+                message.innerText = `${username}, You scored ${score} out of ${questionCount}. ${score >= (questionCount / 2) ? "Well done!" : "Try again next time."}`;
+
+                document.getElementById('calc').style.display = 'none';
+                document.getElementById('user').style.display = 'none';
+                chrono.insertAdjacentElement('afterend', message);
+                document.getElementById('rest').style.display = 'block';
+            }
+
+            function restart() {
+                score = 0;
+                questionCount = 0;
+                timeRemaining = 60;
+                userScore.innerText = score;
+                document.getElementById('calc').style.display = 'block';
+                document.getElementById('user').style.display = 'block';
+                document.getElementById('rest').style.display = 'none';
+                const message = document.getElementById('message');
+                if (message) {
+                    message.remove();
+                }
+                start();
+            }
+
+            window.start = start;
+            window.check = check;
+            window.restart = restart;
+        });
+    </script>
+</body>
+</html>

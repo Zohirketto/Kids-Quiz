@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Mode</title>
+    <link rel="stylesheet" href="./bootstrap-5.3.2-dist/css/bootstrap.min.css">
+    <script src="./bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+         body{
+            background-image:  url(./doodle-elements-children-s-style-repeating-pattern-wallpaper-background-textile-packaging_676179-1017.avif);
+            
+            
+
+         }
+        h1 {
+            position: relative;
+            text-align: center;
+            color: #6d597a;
+            text-transform: uppercase;
+            text-shadow: 5px 5px 15px;
+            margin: 1%;
+            padding: 1%;
+        }
+        #chrono {
+            text-align: center;
+            font-size: 5em;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        #calc {
+            text-align: center;
+            font-size: 4em;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        #score {
+            font-size: 2em;
+            color: green;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            padding: 1rem;
+            border: none;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card container w-25 text-center justify-content-center mt-3">
+        <h2>Your Score: <span id="ih"></span></h2>
+        <p id="score">0</p>
+        <p id="previousScore"></p>
+    </div>
+    <div class="container d-flex flex-column gap-3">
+        <h2 id="chrono"></h2>
+        <h2 id="calc" style="color:#c38e70"></h2> 
+        <input id="user" class="form-control w-75 align-self-center" type="number" placeholder="Enter answer" style="padding: 40px;font-size: 2rem; border: none;border-bottom: 3px solid gray; border-radius: 5px;outline: none;">
+        
+        <div class="d-flex justify-content-center" style="margin: 30px;">
+            <button onclick="start()" class="btn btn-info w-10 align-self-center" id="bt" style="margin: 30px; background-color:#fec89a; border: none;">START</button> 
+            <button onclick="restart()" class="btn btn-info w-10 align-self-center" id="rest" style="margin: 30px; background-color:#fec89a; border: none; display: none;">restart</button>
+            <button onclick="check()" class="btn btn-success w-10 align-self-center" style="margin: 30px; background-color: #ffb5a7; border: none;">CHECK</button> 
+        </div>
+        <a class="align-self-center" href="./choice.html"><button class="btn btn-secondary">Choose another level</button></a>
+    </div>
+
+    <script>
+const previousScore = localStorage.getItem('previousScore');
+const previousScoreElement = document.getElementById('previousScore');
+if (previousScore !== null) {
+            previousScoreElement.innerText = 'Previous Score: ' + previousScore;
+        } else {
+            previousScoreElement.innerText = 'No previous score available';
+        }
+
+        var chrono = document.querySelector('#chrono');
+        var calc = document.querySelector('#calc');
+        let user = document.querySelector('#user');
+        let user_Score = document.querySelector('#score');
+        let num1 = 0;
+        let num2 = 0;
+        let ques = 0;
+        let Time = 30;
+        let score = 0;
+        let next; 
+        const username = localStorage.getItem('username'); 
+        var i = document.getElementById("ih");
+        i.innerText = username + ":";
+
+        function start() {
+            let bt = document.getElementById("bt");
+            bt.style.display = "none";
+            randomize();
+            next = setInterval(function() {
+                Time--;
+                chrono.innerText = Time;
+                
+                if (Time == 0) {
+                    ques++;
+                    Time = 30;
+                    chrono.style.color = 'transparent';
+                    randomize();
+                } else if (Time <= 5) {
+                    chrono.style.color = 'yellow';
+                } else if (Time >= 5) {
+                    chrono.style.color = 'red';
+                }
+
+                if (ques === 10) {
+                    clearInterval(next);
+                    finishGame();
+                }
+            }, 1000);
+        }
+
+        function randomize() {
+            num1 = Math.round(Math.random() * 10);
+            num2 = Math.round(Math.random() * 10);
+            calc.innerText = `${num1} + ${num2} = ?`;
+        }
+
+        function check() {
+            let val = user.value; 
+            let result = num1 + num2;
+            if (val === "") {
+                alert("Please Enter Number");     
+            } else if (result == Number(val)) {
+                score++;           
+                user_Score.innerHTML = score;
+                randomize();
+                ques++;
+                Time = 30;
+                clearInterval(next); 
+                start(); 
+            } else { 
+                randomize();
+                ques++;
+                Time = 30;
+                clearInterval(next);
+                start();         
+                user_Score.innerHTML = score;
+            }
+            if (score < 0) {
+                user_Score.innerText = 0;
+            }
+            if (ques === 10) {
+                clearInterval(next);
+                finishGame();
+            }
+            user.value = "";
+        }
+
+        function finishGame() {
+            chrono.innerText = 'You finished ' + username; 
+            chrono.style.color = 'Green'; 
+            chrono.style.fontSize = '50px';
+            user_Score.innerText = 0;
+            document.getElementById('calc').style.display = 'none';
+            document.getElementById('user').style.display = 'none';
+
+            let message;
+            if (score >= 10) {
+                message = `${username}, You're Smart`;
+            } else {
+                message = `Try again Next time, ${username}`;
+            }
+            
+            
+            let messageElem = document.createElement('h2');
+            messageElem.innerText = message;
+            messageElem.style.textAlign="center"
+            messageElem.style.color = 'blue';
+            messageElem.setAttribute("id","mes")
+            document.body.appendChild(messageElem);
+            chrono.insertAdjacentElement('afterend', messageElem);
+            localStorage.setItem('previousScore', score);
+            document.getElementById('rest').style.display = 'block';
+        }
+        function restart() {
+        score = 0;
+        ques = 0;
+        Time = 30;
+        user_Score.innerHTML = score;
+        clearInterval(next);
+        document.getElementById('calc').style.display = 'block';
+        document.getElementById('user').style.display = 'block';
+        const s =document.getElementById("mes")
+        s.innerText="";
+        document.getElementById('rest').style.display = 'none';
+        start();
+    }
+    </script>
+</body>
+</html>

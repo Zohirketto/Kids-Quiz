@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Level</title>
+    <link rel="stylesheet" href="./bootstrap-5.3.2-dist/css/bootstrap.min.css">
+    <script src="./bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-image: url(./istockphoto-890584176-612x612.jpg);
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #e70cc6;
+            text-transform: uppercase;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 4px #ced7fc;
+        }
+        .btn-level {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .btn-level:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+        .gen {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .btn-outline-secondary {
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Level</h1>
+    <div class="container d-flex flex-column gap-4 gen">
+        <a class="align-self-center w-100" href="./easy.html">
+            <button class="btn-level" style="background-color: #4cc9f0">EASY</button>
+        </a>
+        <a class="align-self-center w-100" href="./normal.html">
+            <button class="btn-level" style="background-color:#3a0ca3 ">NORMAL</button>
+        </a>
+        <a class="align-self-center w-100" href="./hard.html">
+            <button class="btn-level" style="background-color:#7209b7 ">HARD</button>
+        </a>
+    </div>
+</body>
+</html>
